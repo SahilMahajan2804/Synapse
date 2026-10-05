@@ -13,7 +13,7 @@ def test_indian_phone_formats() -> None:
     for sample in samples:
         entities = detector.detect(sample)
         assert [(entity.type, entity.text, entity.score) for entity in entities] == [
-            ("PHONE_NUMBER", sample, 0.75)
+            ("PHONE_NUMBER", sample, 0.95)
         ]
 
 

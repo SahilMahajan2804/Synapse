@@ -3,15 +3,20 @@ from collections.abc import Callable
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from presidio_analyzer import AnalyzerEngine
 
 from app.api.routes import router
 from app.core.config import Settings, get_settings
+from app.core.errors import SynapseHttpError
 from app.detection.analyzer import build_analyzer
 from app.detection.composite import CompositeDetector
 from app.detection.presidio_detector import PresidioDetector
 from app.detection.regex_fallback import RegexFallbackDetector
+from app.guard.leak_guard import LeakGuard
+from app.mapping.memory_store import InMemoryMappingStore
+from app.reverse.mapper import DefaultReverseMapper
 
 
 logger = logging.getLogger("synapse")
@@ -24,11 +29,29 @@ def create_app(settings: Settings | None = None, analyzer_builder: AnalyzerBuild
     configured_settings = settings or get_settings()
     build = analyzer_builder or build_analyzer
 
+    application = FastAPI(
+        title="Synapse Privacy Service",
+        version="1.0.0",
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
+    )
+    application.state.detector_ready = False
+    application.state.detector = None
+    application.state.india_recognizers = []
+    application.state.spacy_model = configured_settings.spacy_model
+    application.state.session_store = InMemoryMappingStore(configured_settings)
+    application.state.leak_guard = LeakGuard()
+    application.state.reverse_mapper = DefaultReverseMapper()
+
     @asynccontextmanager
     async def lifespan(application: FastAPI) -> AsyncIterator[None]:
         application.state.detector_ready = False
         application.state.india_recognizers = []
         application.state.spacy_model = configured_settings.spacy_model
+        application.state.session_store = InMemoryMappingStore(configured_settings)
+        application.state.leak_guard = LeakGuard()
+        application.state.reverse_mapper = DefaultReverseMapper()
         try:
             analyzer, india_recognizers = build(configured_settings)
             analyzer.analyze(text="Rahul Sharma", language="en")
@@ -48,16 +71,16 @@ def create_app(settings: Settings | None = None, analyzer_builder: AnalyzerBuild
             logger.warning("presidio_initialization_failed detector_ready=false")
         yield
 
-    application = FastAPI(
-        title="Synapse Privacy Service",
-        version="1.0.0",
-        lifespan=lifespan,
-        docs_url=None,
-        redoc_url=None,
-        openapi_url=None,
-    )
+    application.router.lifespan_context = lifespan
     application.dependency_overrides[get_settings] = lambda: configured_settings
     application.include_router(router)
+
+    @application.exception_handler(SynapseHttpError)
+    async def synapse_http_error_handler(_request: Request, exc: SynapseHttpError) -> JSONResponse:
+        payload = {"error": exc.code, "message": exc.message}
+        if exc.leak_guard is not None:
+            payload["leak_guard"] = exc.leak_guard
+        return JSONResponse(status_code=exc.status_code, content=payload)
 
     @application.get("/health")
     def health() -> dict[str, str]:

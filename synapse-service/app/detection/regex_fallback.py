@@ -32,7 +32,7 @@ class RegexFallbackDetector:
 	def detect(self, text: str) -> list[DetectedEntity]:
 		entities: list[DetectedEntity] = []
 		for match in _PHONE.finditer(text):
-			entities.append(_entity(text, match, "PHONE_NUMBER", 0.75))
+			entities.append(_entity(text, match, "PHONE_NUMBER", 0.95))
 		for match in _EMAIL.finditer(text):
 			entities.append(_entity(text, match, "EMAIL_ADDRESS", 0.9))
 		for match in _AADHAAR.finditer(text):

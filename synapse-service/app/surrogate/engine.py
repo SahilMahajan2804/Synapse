@@ -1,6 +1,7 @@
 import random
 import re
 import threading
+from contextlib import nullcontext
 
 from app.mapping.session import PersonAlias, SessionContext, normalized_mapping_key
 from app.models.schemas import DetectedEntity, Mapping
@@ -24,7 +25,9 @@ class RuleBasedSurrogateGenerator(SurrogateGenerator):
 		entities: list[DetectedEntity],
 		session: SessionContext,
 	) -> SubstitutionResult:
-		with self._rng_lock, session.lock:
+		session_lock = getattr(session, "lock", None)
+		lock_context = session_lock if session_lock is not None and hasattr(session_lock, "__enter__") and hasattr(session_lock, "__exit__") else nullcontext()
+		with self._rng_lock, lock_context:
 			mappings: list[Mapping] = []
 			replacements: list[tuple[int, int, str]] = []
 			originals = [(entity.type, entity.text) for entity in entities]

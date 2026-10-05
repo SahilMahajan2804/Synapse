@@ -29,7 +29,7 @@ class SessionContext:
 	persons: list[PersonAlias] = field(default_factory=list)
 	date_map: dict[date, date] = field(default_factory=dict)
 	type_counters: dict[str, int] = field(default_factory=dict)
-	lock: threading.Lock = field(default_factory=threading.Lock)
+	lock: threading.RLock = field(default_factory=threading.RLock)
 
 
 def normalized_mapping_key(entity_type: str, value: str) -> str:
