@@ -12,3 +12,10 @@ class DetectedEntity(BaseModel):
 	text: str
 	score: float
 	source: Literal["presidio", "regex"]
+
+
+class Mapping(BaseModel):
+	type: str
+	original: str
+	surrogate: str
+	score: float
