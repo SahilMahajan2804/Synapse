@@ -1,0 +1,1 @@
+"""Session context placeholder for a later implementation step."""

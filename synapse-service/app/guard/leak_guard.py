@@ -1,0 +1,1 @@
+"""Leak guard placeholder for a later implementation step."""

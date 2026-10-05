@@ -1,0 +1,48 @@
+services:
+  synapse-service:
+    build:
+      context: ./synapse-service
+    environment:
+      SYNAPSE_INTERNAL_KEY: ${SYNAPSE_INTERNAL_KEY:?Set SYNAPSE_INTERNAL_KEY in .env}
+      SPACY_MODEL: ${SPACY_MODEL:-en_core_web_lg}
+    mem_limit: 3g
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)",
+        ]
+      interval: 20s
+      timeout: 4s
+      retries: 5
+      start_period: 180s
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SYNAPSE_INTERNAL_KEY: ${SYNAPSE_INTERNAL_KEY:?Set SYNAPSE_INTERNAL_KEY in .env}
+      SYNAPSE_SERVICE_URL: http://synapse-service:8000
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "--silent",
+          "http://localhost:8080/actuator/health",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      synapse-service:
+        condition: service_healthy

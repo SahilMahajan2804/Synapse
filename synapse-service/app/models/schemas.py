@@ -1,0 +1,1 @@
+"""Request and response schema placeholder for a later implementation step."""

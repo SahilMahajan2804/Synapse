@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+synapse:
+  cors:
+    allowed-origins: ${SYNAPSE_CORS_ORIGINS:http://localhost:5173}
+  privacy:
+    base-url: ${SYNAPSE_SERVICE_URL:http://localhost:8000}
+    internal-key: ${SYNAPSE_INTERNAL_KEY:}
+    connect-timeout: 2s
+    read-timeout: 30s
+  llm:
+    provider: ${LLM_PROVIDER:mock}
+    timeout: 60s
+    gemini:
+      api-key: ${GEMINI_API_KEY:}
+      model: ${GEMINI_MODEL:gemini-3.5-flash}
+      base-url: https://generativelanguage.googleapis.com/v1beta
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      model: ${OPENAI_MODEL:}
+      base-url: https://api.openai.com/v1

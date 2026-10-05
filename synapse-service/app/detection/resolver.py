@@ -1,0 +1,1 @@
+"""Detection resolver placeholder for a later implementation step."""

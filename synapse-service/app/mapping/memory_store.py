@@ -1,0 +1,1 @@
+"""In-memory session mapping store placeholder for a later implementation step."""

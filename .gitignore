@@ -1,0 +1,9 @@
+.env
+.tools/
+target/
+__pycache__/
+.venv/
+node_modules/
+dist/
+.pytest_cache/
+reports/

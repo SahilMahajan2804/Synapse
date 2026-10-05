@@ -1,0 +1,1 @@
+"""Composite detector placeholder for a later implementation step."""

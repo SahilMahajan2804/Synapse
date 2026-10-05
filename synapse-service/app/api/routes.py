@@ -1,0 +1,1 @@
+"""Internal API route placeholder for a later implementation step."""

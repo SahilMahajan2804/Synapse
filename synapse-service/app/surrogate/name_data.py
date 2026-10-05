@@ -1,0 +1,1 @@
+"""Synthetic Indian name data placeholder for a later implementation step."""

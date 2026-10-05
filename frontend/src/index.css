@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  font-family: "Space Grotesk", "Aptos", sans-serif;
+  color: #1b2724;
+  background: #eef2ed;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ink: #1b2724;
+  --muted: #71807a;
+  --line: #dce3dc;
+  --surface: #fbfcf9;
+  --green: #40765d;
+  --green-dark: #28533f;
+  --mint: #e3f0e5;
+  --lime: #c9f36b;
+  --blue: #42687a;
+  --rust: #b86c4a;
+  --mono: "DM Mono", "Cascadia Code", monospace;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #eef2ed;
+  background-image:
+    linear-gradient(rgba(64, 118, 93, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(64, 118, 93, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+button {
+  color: inherit;
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(91, 154, 115, 0.35);
+  outline-offset: 2px;
+}
+::selection {
+  color: #17221b;
+  background: #d8f08e;
+}
+
+#root {
+  min-height: 100vh;
+}

@@ -1,0 +1,1 @@
+"""Verhoeff checksum placeholder for a later implementation step."""

@@ -1,0 +1,1 @@
+"""Location surrogate placeholder for a later implementation step."""

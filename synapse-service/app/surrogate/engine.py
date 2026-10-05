@@ -1,0 +1,1 @@
+"""Surrogate generator placeholder for a later implementation step."""

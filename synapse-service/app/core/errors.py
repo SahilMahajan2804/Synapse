@@ -1,0 +1,1 @@
+"""API error placeholder for a later implementation step."""

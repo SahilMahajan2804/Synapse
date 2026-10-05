@@ -1,0 +1,10 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pydantic==2.11.4
+pydantic-settings==2.9.1
+presidio-analyzer==2.2.354
+spacy==3.8.7
+cachetools==5.5.2
+httpx==0.28.1
+# Development dependency.
+pytest==8.3.5
